@@ -30,15 +30,18 @@ const ROLES: { id: RoleId; label: string; icon: React.ComponentType<any> }[] = [
 ];
 
 /* -------------------- Helpers -------------------- */
+// ---------- Helpers
 function useLocal<T>(key: string, init: T) {
   const [v, setV] = useState<T>(() => {
     try {
-      const s = typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+      const s =
+        typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
       return s ? (JSON.parse(s) as T) : init;
     } catch {
       return init;
     }
   });
+
   useEffect(() => {
     try {
       if (typeof window !== "undefined") {
@@ -46,8 +49,10 @@ function useLocal<T>(key: string, init: T) {
       }
     } catch {}
   }, [key, v]);
+
   return [v, setV] as const;
 }
+
 
 const CopyButton: React.FC<{ text: string }> = ({ text }) => {
   const [copied, setCopied] = useState(false);
