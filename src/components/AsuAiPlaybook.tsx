@@ -6,8 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Copy, Check, Heart, Users2, School,
   Code2, Image as ImageIcon, Bot, Video, Sparkles,
-  Sun, Moon, Filter, ChevronRight
+  Filter, ChevronRight
 } from "lucide-react";
+type IconType = React.ComponentType<{ className?: string }>;
+
 
 /* ===========================================================
    ASU AI Playbook — Students & Faculty
@@ -16,7 +18,7 @@ import {
 type ToolId = "chatgpt" | "copilot" | "firefly" | "gemini" | "zoom";
 type RoleId = "student" | "faculty";
 
-const TOOLS: { id: ToolId; label: string; icon: React.ComponentType<any> }[] = [
+const TOOLS: { id: ToolId; label: string; icon: IconType }[] = [
   { id: "chatgpt", label: "ChatGPT", icon: Bot },
   { id: "copilot", label: "Microsoft Copilot", icon: Code2 },
   { id: "firefly", label: "Adobe Firefly", icon: ImageIcon },
@@ -24,10 +26,8 @@ const TOOLS: { id: ToolId; label: string; icon: React.ComponentType<any> }[] = [
   { id: "zoom", label: "Zoom AI Companion", icon: Video },
 ];
 
-const ROLES: { id: RoleId; label: string; icon: React.ComponentType<any> }[] = [
-  { id: "student", label: "Students", icon: Users2 },
-  { id: "faculty", label: "Faculty", icon: School },
-];
+
+
 
 /* -------------------- Helpers -------------------- */
 // ---------- Helpers
@@ -77,7 +77,7 @@ const CopyButton: React.FC<{ text: string }> = ({ text }) => {
 const Pill: React.FC<{
   active: boolean;
   onClick: () => void;
-  icon?: React.ComponentType<any>;
+  icon?: IconType;           // ⬅ change from React.ComponentType<any>
   children: React.ReactNode;
 }> = ({ active, onClick, icon: Icon, children }) => (
   <button
@@ -316,12 +316,13 @@ const ToolBar: React.FC<{
 
 const Card: React.FC<{
   item: Item;
-  onOpen: (i: Item) => void;
+  onOpen: (i: Item) => void;               
   favorite: (i: Item) => boolean;
   setFavorite: (i: Item, on: boolean) => void;
 }> = ({ item, onOpen, favorite, setFavorite }) => {
   const ToolIcon = TOOLS.find((t) => t.id === item.tool)?.icon ?? Bot;
   const fav = favorite(item);
+
   return (
     <motion.div
       layout
@@ -346,6 +347,7 @@ const Card: React.FC<{
           <p className="text-sm text-zinc-600 line-clamp-2 mt-1">{item.prompt}</p>
         </div>
       </div>
+
       <div className="mt-3 flex items-center justify-between">
         <div className="flex gap-2 flex-wrap">
           {item.tags?.slice(0, 3).map((t) => (
@@ -355,17 +357,21 @@ const Card: React.FC<{
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <CopyButton text={item.prompt} />
+          {/* Favorite button */}
           <button
             onClick={() => setFavorite(item, !fav)}
             aria-label={fav ? "Unfavorite" : "Favorite"}
-            className={`rounded-xl p-2 border transition ${fav ? "bg-asu-maroon text-white border-asu-maroon" : "border-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"}`}
+            className={`rounded-xl p-2 border transition ${
+              fav ? "bg-asu-maroon text-white border-asu-maroon" : "border-zinc-200 hover:bg-zinc-100"
+            }`}
           >
             <Heart className="h-4 w-4" />
           </button>
+
+          {/* Details button */}
           <button
             onClick={() => onOpen(item)}
-            className="rounded-xl px-3 py-1.5 text-sm bg-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 border border-zinc-200"
+            className="rounded-xl px-3 py-1.5 text-sm bg-zinc-100 hover:bg-zinc-200 border border-zinc-200"
           >
             Details
           </button>
@@ -374,6 +380,8 @@ const Card: React.FC<{
     </motion.div>
   );
 };
+
+
 
 const Modal: React.FC<{ open: boolean; onClose: () => void; item: Item | null }> = ({ open, onClose, item }) => {
   if (!open || !item) return null;
