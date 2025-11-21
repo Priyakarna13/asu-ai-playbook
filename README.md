@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+Check out the website here - https://ai-playbook-aoc8mwiic-sri-s-projects.vercel.app/
+
 ## Getting Started
 
 First, run the development server:
